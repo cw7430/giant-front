@@ -1,0 +1,12 @@
+.custom-box {
+  max-width: 28rem;
+  backdrop-filter: blur(1rem);
+}
+
+.p-custom {
+  padding: 2rem;
+}
+
+.custom-mb {
+  margin-bottom: 2rem;
+}
