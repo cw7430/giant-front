@@ -15,8 +15,6 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  // title: 'Giant',
-  // description: 'Giant 사내 관리 시스템',
   icons: {
     icon: './svg/favicon.svg',
   },
