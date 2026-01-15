@@ -9,6 +9,7 @@ import {
   type SignInRequestDto,
 } from '@/features/sign-in/schema';
 import { useAppConfigStore } from '@/shared/stores';
+import { signInAction } from '@/features/sign-in/actions';
 
 export default function SignInForm() {
   const { isAutoSignIn, setAutoSignIn } = useAppConfigStore();
@@ -18,8 +19,13 @@ export default function SignInForm() {
     defaultValues: { userName: '', password: '', isAuto: isAutoSignIn },
   });
 
-  const onSubmit: SubmitHandler<SignInRequestDto> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<SignInRequestDto> = async (data) => {
+    try {
+      const response = await signInAction(data);
+      console.log('Sign-in successful:', response);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

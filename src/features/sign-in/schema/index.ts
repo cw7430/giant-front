@@ -6,9 +6,8 @@ export const signInRequestSchema = z.object({
   isAuto: z.boolean(),
 });
 
-export const signInResponseSchema = z.object({
-  accessToken: z.string(),
-  expiresAt: z.string(),
+export const signInResponseSchemaForClient = z.object({
+  accessTokenExpiresAt: z.number(),
   employeeCode: z.string(),
   employeeName: z.string(),
   accountRole: z.string(),
@@ -18,5 +17,18 @@ export const signInResponseSchema = z.object({
   position: z.string(),
 });
 
+export const signInResponseSchemaForServer =
+  signInResponseSchemaForClient.extend({
+    accessToken: z.string(),
+    refreshToken: z.string(),
+    refreshTokenExpiresAt: z.number(),
+    isAuto: z.boolean(),
+  });
+
 export type SignInRequestDto = z.infer<typeof signInRequestSchema>;
-export type SignInResponseDto = z.infer<typeof signInResponseSchema>;
+export type SignInResponseDtoForClient = z.infer<
+  typeof signInResponseSchemaForClient
+>;
+export type SignInResponseDtoForServer = z.infer<
+  typeof signInResponseSchemaForServer
+>;

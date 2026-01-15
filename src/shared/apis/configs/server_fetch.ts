@@ -12,6 +12,7 @@ const serverFetch = async <T>(
       'Content-Type': 'application/json',
       ...init?.headers,
     },
+    cache: 'no-store',
   });
 
   const isJson = res.headers.get('content-type')?.includes('application/json');
