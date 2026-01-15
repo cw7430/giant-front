@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-import { SignInForm } from '@/features/sign-in/ui';
+import { SignInForm } from '@/features/auth/sign-in/ui';
 import style from './page.module.css';
 
 export default function SignIn() {
