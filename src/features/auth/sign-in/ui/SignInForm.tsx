@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { Controller, useForm, type SubmitHandler } from 'react-hook-form';
 import { Button, Form, InputGroup } from 'react-bootstrap';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,11 +9,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   signInRequestSchema,
   type SignInRequestDto,
-} from '@/features/sign-in/schema';
+} from '@/features/auth/sign-in/schema';
 import { useAppConfigStore } from '@/shared/stores';
-import { signInAction } from '@/features/sign-in/actions';
+import { signInAction } from '@/features/auth/sign-in/actions';
 
 export default function SignInForm() {
+  const router = useRouter();
+
+  const [isError, setError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+
   const { isAutoSignIn, setAutoSignIn } = useAppConfigStore();
 
   const { control, handleSubmit } = useForm<SignInRequestDto>({
@@ -20,12 +27,33 @@ export default function SignInForm() {
   });
 
   const onSubmit: SubmitHandler<SignInRequestDto> = async (data) => {
-    try {
-      const response = await signInAction(data);
-      console.log('Sign-in successful:', response);
-    } catch (error) {
-      console.error(error);
+    setError(false);
+    setErrorMessage('');
+
+    const response = await signInAction(data);
+
+    if (response.code !== 'SU') {
+      setError(true);
+
+      switch (response.code) {
+        case 'LGE':
+          setErrorMessage('아이디 또는 비밀번호가 올바르지 않습니다.');
+          break;
+
+        case 'VE':
+          setErrorMessage('아이디와 비밀번호를 입력해주세요.');
+          break;
+
+        default:
+          setErrorMessage(
+            '서버에서 문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
+          );
+      }
+
+      return;
     }
+
+    router.replace('/');
   };
 
   return (
@@ -96,6 +124,14 @@ export default function SignInForm() {
             />
           )}
         />
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        {isError && (
+          <div className="invalid-feedback" style={{ display: 'block' }}>
+            {errorMessage}
+          </div>
+        )}
       </Form.Group>
 
       <div className="d-grid gap-2 mb-3">

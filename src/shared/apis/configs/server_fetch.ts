@@ -26,7 +26,7 @@ const serverFetch = async <T>(
     );
   }
 
-  return data?.result ?? data;
+  return data;
 };
 
 export default serverFetch;
