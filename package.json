@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "cross-env APP_ENV=local next dev",
+    "build:local": "cross-env APP_ENV=local NODE_ENV=production next build",
+    "build:dev": "cross-env APP_ENV=development NODE_ENV=production next build",
+    "build:prod": "cross-env APP_ENV=production NODE_ENV=production next build",
     "start": "next start",
     "lint": "eslint"
   },
@@ -12,6 +14,7 @@
     "@hookform/resolvers": "^5.2.2",
     "bootstrap": "^5.3.8",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
     "lucide-react": "^0.562.0",
     "next": "16.1.1",
     "react": "19.2.3",
@@ -24,6 +27,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "prettier": "^3.4.2",
