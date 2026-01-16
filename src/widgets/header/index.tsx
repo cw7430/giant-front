@@ -1,6 +1,9 @@
 'use client';
+
 import Link from 'next/link';
 import { Navbar, Nav, Button } from 'react-bootstrap';
+
+import { SignOutButton } from '@/features/auth/sign-out/ui';
 
 export default function Header() {
   return (
@@ -19,9 +22,7 @@ export default function Header() {
         <Button variant="outline-light" type="button">
           {'내프로필'}
         </Button>
-        <Button variant="outline-light" type="button">
-          {'로그아웃'}
-        </Button>
+        <SignOutButton />
       </div>
     </div>
   );
