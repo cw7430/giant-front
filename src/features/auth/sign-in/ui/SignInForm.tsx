@@ -11,7 +11,8 @@ import {
   type SignInRequestDto,
 } from '@/features/auth/sign-in/schema';
 import { useAppConfigStore } from '@/shared/stores';
-import { signInAction } from '@/features/auth/sign-in/actions';
+import { signInAction } from '@/features/auth/sign-in/action';
+import { useAuthStore } from '@/entities/auth/store';
 
 export default function SignInForm() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function SignInForm() {
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   const { isAutoSignIn, setAutoSignIn } = useAppConfigStore();
+  const { signIn } = useAuthStore();
 
   const { control, handleSubmit } = useForm<SignInRequestDto>({
     resolver: zodResolver(signInRequestSchema),
@@ -52,6 +54,17 @@ export default function SignInForm() {
 
       return;
     }
+
+    signIn(
+      response.result.accessTokenExpiresAt,
+      response.result.employeeCode,
+      response.result.employeeName,
+      response.result.accountRole,
+      response.result.employeeRole,
+      response.result.department,
+      response.result.team,
+      response.result.position,
+    );
 
     router.replace('/');
   };

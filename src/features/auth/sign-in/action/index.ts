@@ -2,21 +2,20 @@
 
 import { cookies } from 'next/headers';
 
-import clientResponse from '@/shared/apis/configs/client_response';
+import { clientResponseWithResult } from '@/shared/apis/configs';
 import { apiPost } from '@/shared/apis/configs/fetch_request';
-import { ApiSuccessDto } from '@/shared/apis/schemas';
+import { ApiSuccessDtoWithResult } from '@/shared/apis/schemas';
 import {
   type SignInRequestDto,
   type SignInResponseDtoForServer,
 } from '@/features/auth/sign-in/schema';
-import ApiError from '@/shared/apis/configs/api_error';
+import { ApiError } from '@/shared/apis/configs';
 
 export const signInAction = (body: SignInRequestDto) =>
-  clientResponse(async () => {
-    const response = await apiPost<ApiSuccessDto<SignInResponseDtoForServer>>(
-      '/auth/sign-in',
-      body,
-    );
+  clientResponseWithResult(async () => {
+    const response = await apiPost<
+      ApiSuccessDtoWithResult<SignInResponseDtoForServer>
+    >('/auth/sign-in', body);
 
     if (!response?.result) {
       throw new ApiError('ISE', '서버에서 응답이 없습니다.');
@@ -61,9 +60,5 @@ export const signInAction = (body: SignInRequestDto) =>
       ...clientData
     } = result;
 
-    return {
-      code: response.code,
-      message: response.message,
-      result: clientData,
-    };
+    return clientData;
   });
