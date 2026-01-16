@@ -11,7 +11,7 @@ import {
 } from '@/features/auth/sign-in/schema';
 import { ApiError } from '@/shared/apis/configs';
 
-export const signInAction = (body: SignInRequestDto) =>
+export const signInAction = async (body: SignInRequestDto) =>
   clientResponseWithResult(async () => {
     const response = await apiPost<
       ApiSuccessDtoWithResult<SignInResponseDtoForServer>

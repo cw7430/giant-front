@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { Controller, useForm, type SubmitHandler } from 'react-hook-form';
 import { Button, Form, InputGroup } from 'react-bootstrap';
 import { zodResolver } from '@hookform/resolvers/zod';
