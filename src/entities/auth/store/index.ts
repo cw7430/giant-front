@@ -26,18 +26,22 @@ interface AuthState {
   signOut: () => void;
 }
 
+const initialState = {
+  isAuthenticated: false,
+  accessTokenExpiresAt: null,
+  employeeCode: null,
+  employeeName: null,
+  accountRole: null,
+  employeeRole: null,
+  department: null,
+  team: null,
+  position: null,
+};
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      isAuthenticated: false,
-      accessTokenExpiresAt: null,
-      employeeCode: null,
-      employeeName: null,
-      accountRole: null,
-      employeeRole: null,
-      department: null,
-      team: null,
-      position: null,
+      ...initialState,
 
       signIn: (
         accessTokenExpiresAt: number,
@@ -61,18 +65,7 @@ export const useAuthStore = create<AuthState>()(
           position,
         }),
 
-      signOut: () =>
-        set({
-          isAuthenticated: false,
-          accessTokenExpiresAt: null,
-          employeeCode: null,
-          employeeName: null,
-          accountRole: null,
-          employeeRole: null,
-          department: null,
-          team: null,
-          position: null,
-        }),
+      signOut: () => set(initialState),
     }),
     {
       name: 'auth-storage',
