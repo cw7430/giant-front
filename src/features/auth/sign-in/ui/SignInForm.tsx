@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { Controller, useForm, type SubmitHandler } from 'react-hook-form';
 import { Button, Form, InputGroup } from 'react-bootstrap';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,7 +11,8 @@ import {
   type SignInRequestDto,
 } from '@/features/auth/sign-in/schema';
 import { useAppConfigStore } from '@/shared/stores';
-import { signInAction } from '@/features/auth/sign-in/actions';
+import { signInAction } from '@/features/auth/sign-in/action';
+import { useAuthStore } from '@/entities/auth/store';
 
 export default function SignInForm() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function SignInForm() {
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   const { isAutoSignIn, setAutoSignIn } = useAppConfigStore();
+  const { signIn } = useAuthStore();
 
   const { control, handleSubmit } = useForm<SignInRequestDto>({
     resolver: zodResolver(signInRequestSchema),
@@ -52,6 +54,19 @@ export default function SignInForm() {
 
       return;
     }
+
+    const responseData = response.result;
+
+    signIn(
+      responseData.accessTokenExpiresAt,
+      responseData.employeeCode,
+      responseData.employeeName,
+      responseData.accountRole,
+      responseData.employeeRole,
+      responseData.department,
+      responseData.team,
+      responseData.position,
+    );
 
     router.replace('/');
   };
