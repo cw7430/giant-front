@@ -55,15 +55,17 @@ export default function SignInForm() {
       return;
     }
 
+    const responseData = response.result;
+
     signIn(
-      response.result.accessTokenExpiresAt,
-      response.result.employeeCode,
-      response.result.employeeName,
-      response.result.accountRole,
-      response.result.employeeRole,
-      response.result.department,
-      response.result.team,
-      response.result.position,
+      responseData.accessTokenExpiresAt,
+      responseData.employeeCode,
+      responseData.employeeName,
+      responseData.accountRole,
+      responseData.employeeRole,
+      responseData.department,
+      responseData.team,
+      responseData.position,
     );
 
     router.replace('/');
