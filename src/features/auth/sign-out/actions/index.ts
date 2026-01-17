@@ -9,10 +9,9 @@ import { ApiSuccessDtoWithSingle } from '@/shared/apis/schemas';
 export const signOutAction = async () => {
   const cookieStore = await cookies();
 
-  const accessToken = cookieStore.get('accessToken')?.value || null;
   const refreshToken = cookieStore.get('refreshToken')?.value || null;
 
-  const body: SignOutRequestDto = { accessToken, refreshToken };
+  const body: SignOutRequestDto = { refreshToken };
 
   try {
     await apiPost<ApiSuccessDtoWithSingle>('/auth/sign-out', body);

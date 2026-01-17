@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Controller, useForm, type SubmitHandler } from 'react-hook-form';
-import { Button, Form, InputGroup } from 'react-bootstrap';
+import { Button, Form, InputGroup, Spinner } from 'react-bootstrap';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import {
@@ -17,6 +17,7 @@ import { useAuthStore } from '@/entities/auth/store';
 export default function SignInForm() {
   const router = useRouter();
 
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [isError, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
@@ -29,6 +30,7 @@ export default function SignInForm() {
   });
 
   const onSubmit: SubmitHandler<SignInRequestDto> = async (data) => {
+    setLoading(true);
     setError(false);
     setErrorMessage('');
 
@@ -51,6 +53,8 @@ export default function SignInForm() {
             '서버에서 문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
           );
       }
+
+      setLoading(false);
 
       return;
     }
@@ -150,8 +154,17 @@ export default function SignInForm() {
       </Form.Group>
 
       <div className="d-grid gap-2 mb-3">
-        <Button variant="primary" type="submit">
-          {'로그인'}
+        <Button variant="primary" type="submit" disabled={isLoading}>
+          {isLoading && (
+            <Spinner
+              as="span"
+              animation="border"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+            />
+          )}
+          {isLoading ? '로그인중...' : '로그인'}
         </Button>
       </div>
     </Form>

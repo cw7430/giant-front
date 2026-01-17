@@ -14,7 +14,7 @@ export default function SignOutButton() {
 
   const { signOut } = useAuthStore();
 
-  const handleSignOut = async () => {
+  const onClick = async () => {
     setLoading(true);
     try {
       await signOutAction();
@@ -28,7 +28,7 @@ export default function SignOutButton() {
     <Button
       variant="outline-light"
       type="button"
-      onClick={handleSignOut}
+      onClick={onClick}
       disabled={isLoading}
     >
       {'로그아웃'}
