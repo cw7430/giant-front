@@ -1,27 +1,32 @@
-'use client';
-
 import Link from 'next/link';
-import { Navbar, Nav, Button } from 'react-bootstrap';
 
 import { SignOutButton } from '@/features/auth/sign-out/ui';
+import { MyProfileButton } from '@/features/auth/my-profile/ui';
 
 export default function Header() {
   return (
     <div className="bg-black text-white py-3 px-4 d-flex justify-content-between align-items-center">
-      <Navbar bg="black" data-bs-theme="dark">
-        <Navbar.Brand as={Link} href="/" className="fs-4">
+      <nav
+        data-bs-theme="dark"
+        className="navbar navbar-expand navbar-light bg-black"
+      >
+        <Link href="/" className="fs-4 navbar-brand">
           {'Giant'}
-        </Navbar.Brand>
-        <Nav className="me-auto">
-          <Nav.Link href="#">{'재고관리'}</Nav.Link>
-          <Nav.Link href="#">{'매출관리'}</Nav.Link>
-          <Nav.Link href="#">{'인사관리'}</Nav.Link>
-        </Nav>
-      </Navbar>
+        </Link>
+        <div className="me-auto navbar-nav">
+          <Link href="/" className="nav-link">
+            {'재고관리'}
+          </Link>
+          <Link href="/" className="nav-link">
+            {'매출관리'}
+          </Link>
+          <Link href="/" className="nav-link">
+            {'인사관리'}
+          </Link>
+        </div>
+      </nav>
       <div className="d-flex gap-2">
-        <Button variant="outline-light" type="button">
-          {'내프로필'}
-        </Button>
+        <MyProfileButton />
         <SignOutButton />
       </div>
     </div>

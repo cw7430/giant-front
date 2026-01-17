@@ -154,7 +154,7 @@ export default function SignInForm() {
       </Form.Group>
 
       <div className="d-grid gap-2 mb-3">
-        <Button variant="primary" type="submit">
+        <Button variant="primary" type="submit" disabled={isLoading}>
           {isLoading && (
             <Spinner
               as="span"
