@@ -1,10 +1,10 @@
 import { cookies } from 'next/headers';
 
 import { ApiSuccessDtoWithResult } from '@/shared/apis/schemas';
-import { SignInResponseDtoForServer } from '@/features/auth/sign-in/schema';
+import { type SignInAndRefreshResponseDtoForServer } from '@/features/auth/shared/schema';
 
 export const signInAndRefreshActions = async (
-  response: ApiSuccessDtoWithResult<SignInResponseDtoForServer>,
+  response: ApiSuccessDtoWithResult<SignInAndRefreshResponseDtoForServer>,
 ) => {
   const result = response.result;
   const cookieStore = await cookies();
