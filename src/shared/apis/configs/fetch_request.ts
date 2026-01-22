@@ -22,25 +22,37 @@ export const apiGet = async <T>(
 
 export const apiPost = async <T, B = unknown>(
   url: string,
-  body: B,
+  body?: B,
   options?: FetchOptions,
 ): Promise<T | undefined> => {
   return serverFetch<T>(url, {
     method: 'POST',
     ...options,
-    body: JSON.stringify(body),
+    ...(body && { body: JSON.stringify(body) }),
   });
 };
 
 export const apiPut = async <T, B = unknown>(
   url: string,
-  body: B,
+  body?: B,
   options?: FetchOptions,
 ): Promise<T | undefined> => {
   return serverFetch<T>(url, {
     method: 'PUT',
     ...options,
-    body: JSON.stringify(body),
+    ...(body && { body: JSON.stringify(body) }),
+  });
+};
+
+export const apiPatch = async <T, B = unknown>(
+  url: string,
+  body?: B,
+  options?: FetchOptions,
+): Promise<T | undefined> => {
+  return serverFetch<T>(url, {
+    method: 'PATCH',
+    ...options,
+    ...(body && { body: JSON.stringify(body) }),
   });
 };
 
