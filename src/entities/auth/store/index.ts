@@ -1,33 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
-interface AuthState {
-  isAuthenticated: boolean;
-  accessTokenExpiresAt: number | null;
-  employeeCode: string | null;
-  employeeName: string | null;
-  accountRole: string | null;
-  employeeRole: string | null;
-  department: string | null;
-  team: string | null;
-  position: string | null;
-
-  signIn: (
-    accessTokenExpiresAt: number,
-    employeeCode: string,
-    employeeName: string,
-    accountRole: string,
-    employeeRole: string,
-    department: string,
-    team: string,
-    position: string,
-  ) => void;
-
-  signOut: () => void;
-}
+import { type AuthState } from '@/entities/auth/types';
 
 const initialState = {
-  isAuthenticated: false,
   accessTokenExpiresAt: null,
   employeeCode: null,
   employeeName: null,
@@ -38,9 +13,34 @@ const initialState = {
   position: null,
 };
 
+const validateAuthIntegrity = (state: AuthState): boolean => {
+  const {
+    accessTokenExpiresAt,
+    employeeCode,
+    employeeName,
+    accountRole,
+    employeeRole,
+    department,
+    team,
+    position,
+  } = state;
+
+  return !!(
+    employeeCode &&
+    employeeName &&
+    accountRole &&
+    employeeRole &&
+    department &&
+    team &&
+    position &&
+    accessTokenExpiresAt &&
+    Date.now() + 30 * 1000 < accessTokenExpiresAt
+  );
+};
+
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
 
       signIn: (
@@ -54,7 +54,6 @@ export const useAuthStore = create<AuthState>()(
         position: string,
       ) =>
         set({
-          isAuthenticated: true,
           accessTokenExpiresAt,
           employeeCode,
           employeeName,
@@ -65,6 +64,8 @@ export const useAuthStore = create<AuthState>()(
           position,
         }),
 
+      checkAuth: () => validateAuthIntegrity(get()),
+
       signOut: () => set(initialState),
     }),
     {
@@ -72,3 +73,7 @@ export const useAuthStore = create<AuthState>()(
     },
   ),
 );
+
+export const useIsAuthenticated = () => {
+  return useAuthStore((state) => validateAuthIntegrity(state));
+};
