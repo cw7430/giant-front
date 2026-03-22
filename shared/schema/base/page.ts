@@ -11,17 +11,20 @@ export const pageRequestSchema = <T extends [string, ...string[]]>(
     sortOrder: z.enum(['asc', 'desc']),
   });
 
-export type PageResponseMetaDto = {
-  totalElements: number;
-  totalPages: number;
-  currentPage: number;
-  size: number;
-  startPage: number;
-  endPage: number;
-  hasNext: boolean;
-  hasPrevious: boolean;
-};
+export const pageResponseMetaSchema = z.object({
+  totalElements: z.number(),
+  totalPages: z.number(),
+  currentPage: z.number(),
+  size: z.number(),
+  startPage: z.number(),
+  endPage: z.number(),
+  hasNext: z.boolean(),
+  hasPrevious: z.boolean(),
+});
 
-export type PageResponseDto<T> = PageResponseMetaDto & {
-  contents: T;
-};
+export const pageResponseSchema = <T extends z.ZodTypeAny>(content: T) =>
+  pageResponseMetaSchema.extend({
+    content: z.array(content),
+  });
+
+export type PageResponseMetaDto = z.infer<typeof pageResponseMetaSchema>;
