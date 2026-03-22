@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxt/image',
     '@pinia/nuxt',
+    '@vee-validate/nuxt',
     '@bootstrap-vue-next/nuxt',
     'dayjs-nuxt',
   ],
