@@ -1,0 +1,23 @@
+export const ResponseCode = {
+  SUCCESS: 'SU',
+  VALIDATION_ERROR: 'VE',
+  CUSTOM_VALIDATION_ERROR: 'CVE',
+  UNAUTHORIZED: 'UA',
+  LOGIN_ERROR: 'LGE',
+  PASSWORD_ERROR: 'PWE',
+  FORBIDDEN: 'FB',
+  RESOURCE_NOT_FOUND: 'RNF',
+  ENDPOINT_NOT_FOUND: 'ENF',
+  DUPLICATE_RESOURCE: 'DR',
+  CUSTOM_DUPLICATE_RESOURCE: 'CDR',
+  CONFLICT: 'CF',
+  INTERNAL_SERVER_ERROR: 'ISE',
+} as const;
+
+const {SUCCESS, ...FailCodes} = ResponseCode;
+
+export type ResponseCode = (typeof ResponseCode)[keyof typeof ResponseCode];
+
+export type SuccessCode = typeof SUCCESS;
+
+export type FailCodes = typeof FailCodes;
