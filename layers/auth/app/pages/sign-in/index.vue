@@ -9,11 +9,12 @@ definePageMeta({
     class="d-flex align-items-center justify-content-center min-vh-100 bg-background p-4"
   >
     <div class="position-absolute top-0 start-0 w-100 h-100 overflow-hidden">
-      <div class="position-absolute glow-primary" />
-      <div class="position-absolute glow-accent" />
+      <div class="position-absolute" :class="$style.glowPrimary" />
+      <div class="position-absolute" :class="$style.glowAccent" />
     </div>
     <BCard
-      class="w-100 position-relative shadow-lg border-0 text-center glass-card"
+      class="w-100 position-relative shadow-lg border-0 text-center"
+      :class="$style.glassCard"
     >
       <BCardBody class="text-center pb-2">
         <BCardTitle>로그인</BCardTitle>
@@ -26,7 +27,7 @@ definePageMeta({
   </main>
 </template>
 
-<style>
+<style module>
 .glow-primary {
   top: -10rem;
   right: -10rem;

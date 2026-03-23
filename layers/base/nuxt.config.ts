@@ -7,6 +7,14 @@ export default defineNuxtConfig({
     typeCheck: true,
   },
 
+  vite: {
+    css: {
+      modules: {
+        localsConvention: 'camelCase',
+      },
+    },
+  },
+
   modules: [
     '@nuxt/eslint',
     '@nuxt/fonts',
