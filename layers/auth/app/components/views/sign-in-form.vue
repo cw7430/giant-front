@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
-import { useAppConfigStore } from '~/stores/app';
+import { useAppConfigStore } from '~~/layers/base/app/stores/app';
 import {
   signInRequestSchema,
   type SignInRequestDto,
-} from '~~/shared/schema/auth/sign-in';
+} from '~~/layers/auth/shared/schema/sign-in';
 
 const appConfigStore = useAppConfigStore();
 

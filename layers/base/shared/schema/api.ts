@@ -1,4 +1,7 @@
-import type { SuccessCode, FailCodes } from '~~/shared/constants/response-code';
+import type {
+  SuccessCode,
+  FailCodes,
+} from '~~/layers/base/shared/constants/response-code';
 
 type ValidationError = {
   field: string;
