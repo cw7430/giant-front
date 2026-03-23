@@ -1,7 +1,10 @@
 import { z } from 'zod';
 
-import { zStringToDate } from '~~/shared/utils/zod-helper';
-import { pageRequestSchema, pageResponseSchema } from '~~/shared/schema/base/page';
+import { zStringToDate } from '~~/layers/base/shared/utils/zod-helper';
+import {
+  pageRequestSchema,
+  pageResponseSchema,
+} from '~~/layers/base/shared/schema/base/page';
 
 export const employeeProfilesRequestSchema = pageRequestSchema([
   'employee',
