@@ -18,6 +18,8 @@ definePageMeta({
       <BCardBody class="text-center pb-2">
         <BCardTitle>로그인</BCardTitle>
         <BCardSubtitle>Giant</BCardSubtitle>
+      </BCardBody>
+      <BCardBody class="text-start pb-2">
         <SignInForm />
       </BCardBody>
     </BCard>
