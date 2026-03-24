@@ -3,7 +3,7 @@ import type {
   FailCodes,
 } from '~~/layers/base/shared/constants/response-code';
 
-type ValidationError = {
+export type ValidationError = {
   field: string;
   message: string;
 };

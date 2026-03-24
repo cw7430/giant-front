@@ -14,10 +14,10 @@ export const ResponseCode = {
   INTERNAL_SERVER_ERROR: 'ISE',
 } as const;
 
-const {SUCCESS, ...FailCodes} = ResponseCode;
+const { SUCCESS, ...FailCodes } = ResponseCode;
 
 export type ResponseCode = (typeof ResponseCode)[keyof typeof ResponseCode];
 
 export type SuccessCode = typeof SUCCESS;
 
-export type FailCodes = typeof FailCodes;
+export type FailCodes = (typeof FailCodes)[keyof typeof FailCodes];
