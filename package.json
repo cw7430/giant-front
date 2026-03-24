@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
+    "reset": "rm -rf node_modules .nuxt .output package-lock.json && npm cache clean --force && npm install",
+    "repair": "rm -rf node_modules .nuxt .output && npm ci",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
