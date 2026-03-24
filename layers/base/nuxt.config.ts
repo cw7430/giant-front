@@ -15,6 +15,14 @@ export default defineNuxtConfig({
     },
   },
 
+  runtimeConfig: {
+    apiUrl: process.env.API_URL ?? 'http://localhost:8080/api/v1',
+    
+    public: {
+      appEnv: process.env.NUXT_PUBLIC_APP_ENV ?? 'local',
+    },
+  },
+
   modules: [
     '@nuxt/eslint',
     '@nuxt/fonts',
