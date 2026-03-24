@@ -5,8 +5,8 @@ const _props = defineProps<{ error: NuxtError }>();
 </script>
 
 <template>
-  <div>
+  <main>
     <h1>{{ error.status }}</h1>
     <NuxtLink to="/">Go back home</NuxtLink>
-  </div>
+  </main>
 </template>
