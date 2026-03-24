@@ -39,12 +39,12 @@ export default defineNuxtConfig({
     ],
   },
 
-  components: [
-    {
-      path: '~~/layers/base/app/components',
-      pathPrefix: false,
-    },
-  ],
+  // components: [
+  //   {
+  //     path: '~~/layers/base/app/components',
+  //     pathPrefix: false,
+  //   },
+  // ],
 
   app: {
     head: {

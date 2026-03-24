@@ -5,7 +5,7 @@ import { useAppConfigStore } from '~~/layers/base/app/stores/app';
 import {
   signInRequestSchema,
   type SignInRequestDto,
-} from '~~/layers/auth/shared/schema/sign-in';
+} from '~~/layers/auth/contract/schema/sign-in';
 
 const appConfigStore = useAppConfigStore();
 
