@@ -26,8 +26,12 @@ watch(isAuto, (newVal) => {
   appConfigStore.setAutoSignIn(newVal);
 });
 
-const onSubmit = handleSubmit((values) => {
-  alert(JSON.stringify(values));
+const onSubmit = handleSubmit(async (values) => {
+  const { data } = await useFetch('/api/auth/sign-in', {
+    method: 'POST',
+    body: values,
+  });
+  alert(JSON.stringify(data.value));
 });
 </script>
 
