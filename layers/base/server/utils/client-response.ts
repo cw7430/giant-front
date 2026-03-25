@@ -64,5 +64,3 @@ export const clientResponseSingle = (
 export const clientResponseWithResult = <T>(
   handler: (event: H3Event) => Promise<T>,
 ) => defineEventHandler((event) => withResult(() => handler(event)));
-
-// export default defineEventHandler(async (event) => {}
