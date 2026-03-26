@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate';
 import { toTypedSchema } from '@vee-validate/zod';
+
 import { useAppConfigStore } from '~~/layers/base/app/stores/app';
+import { useAuthStore } from '~~/layers/auth/app/stores/auth';
 import {
   signInRequestSchema,
   type SignInRequestDto,
 } from '~~/layers/auth/contract/schema/sign-in';
 
 const appConfigStore = useAppConfigStore();
+const authStore = useAuthStore();
+
+const isLoading = ref<boolean>(false);
+const rootError = ref<string | null>(null);
 
 const { handleSubmit, errors, defineField } = useForm<SignInRequestDto>({
   validationSchema: toTypedSchema(signInRequestSchema),
@@ -27,11 +33,34 @@ watch(isAuto, (newVal) => {
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  const { data } = await useFetch('/api/auth/sign-in', {
+  rootError.value = null;
+  isLoading.value = true;
+
+  const response = await $fetch('/api/auth/sign-in', {
     method: 'POST',
     body: values,
   });
-  alert(JSON.stringify(data.value));
+
+  if (response.code !== 'SU') {
+    switch (response.code) {
+      case 'LGE':
+      case 'VE':
+        rootError.value = '아이디 또는 비밀번호가 올바르지 않습니다.';
+        break;
+
+      default:
+        rootError.value =
+          '서버에서 문제가 발생했습니다. 잠시 후 다시 시도해주세요.';
+    }
+
+    isLoading.value = false;
+    return;
+  }
+
+  authStore.signIn(response.result);
+
+  isLoading.value = false;
+  return await navigateTo('/', { replace: true });
 });
 </script>
 
@@ -79,7 +108,15 @@ const onSubmit = handleSubmit(async (values) => {
       자동 로그인
     </BFormCheckbox>
 
-    <BButton type="submit" variant="primary" class="w-100 mt-2">
+    <div class="d-block invalid-feedback mb-2">{{ rootError }}</div>
+
+    <BButton
+      type="submit"
+      variant="primary"
+      class="w-100 mt-2"
+      :disabled="isLoading"
+    >
+      <BSpinner v-if="isLoading" small />
       로그인
     </BButton>
   </BForm>

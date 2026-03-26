@@ -1,15 +1,30 @@
 import { z } from 'zod';
 
-export const signInAndRefreshResponseSchemaForClient = z.object({
-  accessTokenExpiresAtMs: z.number(),
-  employeeCode: z.string(),
-  employeeName: z.string(),
-  accountRole: z.enum(['USER', 'ADMIN']),
-  employeeRole: z.enum(['DEPARTMENT_CHIEF', 'TEAM_CHIEF', 'EMPLOYEE']),
-  department: z.string(),
-  team: z.string(),
-  position: z.string(),
+export const authStateDataSchema = z.object({
+  accessTokenExpiresAtMs: z.number().nullable(),
+  employeeCode: z.string().nullable(),
+  employeeName: z.string().nullable(),
+  authRole: z.enum(['USER', 'ADMIN']).nullable(),
+  employeeRole: z
+    .enum(['DEPARTMENT_CHIEF', 'TEAM_CHIEF', 'EMPLOYEE'])
+    .nullable(),
+  department: z.string().nullable(),
+  team: z.string().nullable(),
+  position: z.string().nullable(),
 });
+
+export const signInAndRefreshResponseSchemaForClient = authStateDataSchema
+  .partial()
+  .extend({
+    accessTokenExpiresAtMs: z.number(),
+    employeeCode: z.string(),
+    employeeName: z.string(),
+    authRole: z.enum(['USER', 'ADMIN']),
+    employeeRole: z.enum(['DEPARTMENT_CHIEF', 'TEAM_CHIEF', 'EMPLOYEE']),
+    department: z.string(),
+    team: z.string(),
+    position: z.string(),
+  });
 
 export const signInAndRefreshResponseSchemaForServer =
   signInAndRefreshResponseSchemaForClient.extend({
@@ -25,3 +40,5 @@ export type SignInAndRefreshResponseDtoForClient = z.infer<
 export type SignInAndRefreshResponseDtoForServer = z.infer<
   typeof signInAndRefreshResponseSchemaForServer
 >;
+
+export type AuthStateData = z.infer<typeof authStateDataSchema>;

@@ -16,6 +16,7 @@ export const signInAndRefresh = (
   const validation = signInAndRefreshResponseSchemaForServer.safeParse(
     response.result,
   );
+
   if (!validation.success) {
     throw new ApiError('ISE', '서버 응답 형식이 올바르지 않습니다.');
   }
