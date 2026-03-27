@@ -79,6 +79,7 @@ const onSubmit = handleSubmit(async (values) => {
         v-bind="userNameProps"
         :state="errors.userName ? false : null"
         placeholder="아이디를 입력해주세요"
+        @update:model-value="rootError = null"
       />
     </BFormGroup>
 
@@ -96,6 +97,7 @@ const onSubmit = handleSubmit(async (values) => {
         v-bind="passwordProps"
         :state="errors.password ? false : null"
         placeholder="비밀번호를 입력해주세요"
+        @update:model-value="rootError = null"
       />
     </BFormGroup>
 
