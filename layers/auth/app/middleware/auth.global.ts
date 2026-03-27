@@ -1,14 +1,10 @@
+import type { CookieRef } from '#app';
+
 import { useAppConfigStore } from '~~/layers/base/app/stores/app';
-import { useAuthStore } from '~~/layers/auth/app/stores/auth';
+import { useAuthStore, type AuthStore } from '~~/layers/auth/app/stores/auth';
 
-export default defineNuxtRouteMiddleware(async (to) => {
-  const refreshToken = useCookie('refreshToken');
-  const appConfigStore = useAppConfigStore();
-  const authStore = useAuthStore();
-  const isServer = import.meta.server;
-  const isClient = import.meta.client;
-
-  if (isClient && !authStore.hasHydrated) {
+const waitForHydration = async (authStore: AuthStore) => {
+  if (import.meta.client && !authStore.hasHydrated) {
     await new Promise((resolve) => {
       const unwatch = watch(
         () => authStore.hasHydrated,
@@ -22,37 +18,66 @@ export default defineNuxtRouteMiddleware(async (to) => {
       );
     });
   }
+};
 
+const isPublicPage = (path: string) => {
   const publicPages = ['/sign-in'];
-  const isPublicPage = publicPages.some((path) => to.path.startsWith(path));
-  const isAuthPage = to.path.startsWith('/sign-in');
+  return publicPages.some((p) => path.startsWith(p));
+};
 
-  const hasValidSession = isServer ? !!refreshToken.value : authStore.checkAuth;
+const isAuthPage = (path: string) => {
+  return path.startsWith('/sign-in');
+};
 
-  const refreshBody = {
-    isAuto: appConfigStore.isAutoSignIn,
-  };
+const hasValidSession = (
+  isServer: boolean,
+  refreshToken: CookieRef<string | null | undefined>,
+  authStore: AuthStore,
+) => {
+  return isServer ? !!refreshToken.value : authStore.checkAuth;
+};
 
-  if (isClient && authStore.employeeCode && !authStore.checkAuth) {
-    const response = await $fetch('/api/auth/refresh', {
-      method: 'POST',
-      body: refreshBody,
-    });
+const tryRefresh = async (authStore: AuthStore, isAuto: boolean) => {
+  const response = await $fetch('/api/auth/refresh', {
+    method: 'POST',
+    body: { isAuto },
+  });
 
-    if (response.code === 'SU') {
-      authStore.signIn(response.result);
-      return;
-    }
-
-    authStore.signOut();
+  if (response.code === 'SU') {
+    authStore.signIn(response.result);
+    return true;
   }
 
-  if (hasValidSession && isAuthPage) {
+  authStore.signOut();
+  return false;
+};
+
+export default defineNuxtRouteMiddleware(async (to) => {
+  const refreshToken = useCookie('refreshToken');
+  const appConfigStore = useAppConfigStore();
+  const authStore = useAuthStore();
+
+  const isServer = import.meta.server;
+
+  await waitForHydration(authStore);
+
+  const publicPage = isPublicPage(to.path);
+  const authPage = isAuthPage(to.path);
+
+  let validSession = hasValidSession(isServer, refreshToken, authStore);
+
+  if (!isServer && authStore.employeeCode && !validSession) {
+    validSession = await tryRefresh(authStore, appConfigStore.isAutoSignIn);
+  }
+
+  if (validSession && authPage) {
     return navigateTo('/', { replace: true });
   }
 
-  if (!hasValidSession && !isPublicPage) {
+  if (!validSession && !publicPage) {
     const redirectUrl = encodeURIComponent(to.fullPath);
-    return navigateTo(`/sign-in?redirect=${redirectUrl}`, { replace: true });
+    return navigateTo(`/sign-in?redirect=${redirectUrl}`, {
+      replace: true,
+    });
   }
 });
