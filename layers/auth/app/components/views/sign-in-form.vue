@@ -9,6 +9,8 @@ import {
   type SignInRequestDto,
 } from '~~/layers/auth/contract/schema/sign-in';
 
+const route = useRoute();
+
 const appConfigStore = useAppConfigStore();
 const authStore = useAuthStore();
 
@@ -59,8 +61,13 @@ const onSubmit = handleSubmit(async (values) => {
 
   authStore.signIn(response.result);
 
+  const redirect = route.query.redirect as string | undefined;
+
+  const safeRedirect =
+    redirect && redirect.startsWith('/') ? decodeURIComponent(redirect) : '/';
+
   isLoading.value = false;
-  return await navigateTo('/', { replace: true });
+  return await navigateTo(safeRedirect, { replace: true });
 });
 </script>
 
