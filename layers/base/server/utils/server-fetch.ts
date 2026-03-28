@@ -39,7 +39,7 @@ export const serverFetch = async <T>(
   }
 
   try {
-    return await $fetch<T>(path, {
+    const response = await $fetch(path, {
       baseURL: config.apiUrl,
       ...init,
       headers: {
@@ -48,6 +48,8 @@ export const serverFetch = async <T>(
         ...init.headers,
       },
     });
+
+    return response as T;
   } catch (err) {
     if (err instanceof FetchError) {
       throw new ApiError(
