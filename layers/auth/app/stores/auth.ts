@@ -4,6 +4,7 @@ import type {
   AuthStateData,
   SignInAndRefreshResponseDtoForClient,
 } from '~~/layers/auth/contract/schema/shared';
+import { useAppConfigStore } from '~~/layers/base/app/stores/app';
 
 const initialState: AuthStateData = {
   accessTokenExpiresAtMs: null,
@@ -45,6 +46,8 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     ...initialState,
     hasHydrated: false as boolean,
+    refreshTimer: null as ReturnType<typeof setTimeout> | null,
+    isRefreshing: false,
   }),
 
   getters: {
@@ -61,16 +64,68 @@ export const useAuthStore = defineStore('auth', {
         accessTokenExpiresAtMs: data.accessTokenExpiresAtMs,
         employeeCode: data.employeeCode,
         employeeName: data.employeeName,
-        accountRole: data.authRole,
+        authRole: data.authRole,
         employeeRole: data.employeeRole,
         department: data.department,
         team: data.team,
         position: data.position,
       });
+
+      this.setupRefreshTimer();
     },
 
     signOut() {
+      if (this.refreshTimer) {
+        clearTimeout(this.refreshTimer);
+        this.refreshTimer = null;
+      }
+
       this.$patch({ ...initialState });
+    },
+
+    async refresh() {
+      if (this.isRefreshing) return false;
+      this.isRefreshing = true;
+
+      try {
+        const response = await $fetch('/api/auth/refresh', {
+          method: 'POST',
+          body: {
+            isAuto: useAppConfigStore().isAutoSignIn,
+          },
+        });
+
+        if (response.code === 'SU') {
+          this.signIn(response.result);
+          return true;
+        }
+
+        this.signOut();
+        return false;
+      } catch {
+        this.signOut();
+        return false;
+      } finally {
+        this.isRefreshing = false;
+      }
+    },
+
+    setupRefreshTimer() {
+      if (import.meta.server) return;
+      if (this.refreshTimer) clearTimeout(this.refreshTimer);
+      if (!this.accessTokenExpiresAtMs) return;
+
+      const leadTime = 2 * 60 * 1000;
+      const now = Date.now();
+      const delay = this.accessTokenExpiresAtMs - now - leadTime;
+
+      if (delay <= 0) {
+        this.refresh();
+      } else {
+        this.refreshTimer = setTimeout(() => {
+          this.refresh();
+        }, delay);
+      }
     },
   },
 
@@ -82,7 +137,7 @@ export const useAuthStore = defineStore('auth', {
       'accessTokenExpiresAtMs',
       'employeeCode',
       'employeeName',
-      'accountRole',
+      'authRole',
       'employeeRole',
       'department',
       'team',
@@ -91,6 +146,10 @@ export const useAuthStore = defineStore('auth', {
 
     afterHydrate: (ctx) => {
       ctx.store.setHasHydrated(true);
+
+      if (ctx.store.checkAuth) {
+        ctx.store.setupRefreshTimer();
+      }
     },
   },
 });

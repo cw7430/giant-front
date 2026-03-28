@@ -1,6 +1,5 @@
 import type { CookieRef } from '#app';
 
-import { useAppConfigStore } from '~~/layers/base/app/stores/app';
 import { useAuthStore, type AuthStore } from '~~/layers/auth/app/stores/auth';
 
 const waitForHydration = async (authStore: AuthStore) => {
@@ -37,24 +36,8 @@ const hasValidSession = (
   return isServer ? !!refreshToken.value : authStore.checkAuth;
 };
 
-const tryRefresh = async (authStore: AuthStore, isAuto: boolean) => {
-  const response = await $fetch('/api/auth/refresh', {
-    method: 'POST',
-    body: { isAuto },
-  });
-
-  if (response.code === 'SU') {
-    authStore.signIn(response.result);
-    return true;
-  }
-
-  authStore.signOut();
-  return false;
-};
-
 export default defineNuxtRouteMiddleware(async (to) => {
   const refreshToken = useCookie('refreshToken');
-  const appConfigStore = useAppConfigStore();
   const authStore = useAuthStore();
 
   const isServer = import.meta.server;
@@ -66,8 +49,13 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   let validSession = hasValidSession(isServer, refreshToken, authStore);
 
-  if (!isServer && authStore.employeeCode && !validSession) {
-    validSession = await tryRefresh(authStore, appConfigStore.isAutoSignIn);
+  const isNearExpiry =
+    !isServer &&
+    authStore.accessTokenExpiresAtMs &&
+    Date.now() + 2 * 60 * 1000 >= authStore.accessTokenExpiresAtMs;
+
+  if (isNearExpiry && authStore.employeeCode) {
+    validSession = await authStore.refresh();
   }
 
   if (validSession && authPage) {
