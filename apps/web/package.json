@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@repo/shared-constants": "workspace:*",
+    "@repo/shared-schemas": "workspace:*",
+    "@repo/shared-api": "workspace:*",
     "@hookform/resolvers": "^6.0.0",
     "@react-router/node": "^8.5.0",
     "@react-router/serve": "^8.5.0",
