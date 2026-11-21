@@ -8,7 +8,7 @@ import {
 } from '@repo/shared-api/fetch';
 import { ResponseCode } from '@repo/shared-constants/api';
 
-import { getTokenCookies } from '~/shared/lib';
+import { getTokenCookies } from '~/shared/lib/server';
 
 export type AuthType = 'access' | 'refresh' | 'none';
 
