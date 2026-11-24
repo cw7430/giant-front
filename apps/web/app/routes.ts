@@ -10,4 +10,5 @@ export default [
     route('login', 'routes/_guest/login.tsx'),
   ]),
   layout('routes/_user/layout.tsx', [index('routes/_user/home.tsx')]),
+  route('logout', 'routes/_api/logout.ts'),
 ] satisfies RouteConfig;

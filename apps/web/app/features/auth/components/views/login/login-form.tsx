@@ -43,16 +43,24 @@ export default function LoginForm() {
     control,
     setError,
     clearErrors,
+    subscribe,
     formState: { errors },
   } = loginForm;
 
-  const handleFormChange = () => {
-    if (errors.root) {
-      clearErrors('root');
-      clearErrors('userName');
-      clearErrors('password');
-    }
-  };
+  useEffect(() => {
+    return subscribe({
+      formState: {
+        values: true,
+      },
+      callback: () => {
+        if (errors.root) {
+          clearErrors('root');
+          clearErrors('userName');
+          clearErrors('password');
+        }
+      },
+    });
+  }, [subscribe, errors.root, clearErrors]);
 
   const onSubmit: SubmitHandler<LoginRequestDto> = (data) => {
     fetcher.submit(
@@ -105,13 +113,7 @@ export default function LoginForm() {
   }, [fetcher.data, login, navigate, redirectTo, setError]);
 
   return (
-    <fetcher.Form
-      method="post"
-      action="/login"
-      onSubmit={handleSubmit(onSubmit)}
-      onChange={handleFormChange}
-      noValidate
-    >
+    <Form onSubmit={handleSubmit(onSubmit)} noValidate>
       <Form.Group className="mb-2" controlId="login.user-name">
         <Form.Label>아이디</Form.Label>
         <Controller
@@ -180,6 +182,6 @@ export default function LoginForm() {
         {isPending && <Spinner size="sm" />}
         로그인
       </Button>
-    </fetcher.Form>
+    </Form>
   );
 }
