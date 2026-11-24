@@ -7,7 +7,7 @@ import styles from './login.module.css';
 import type { Route } from './+types/login';
 import { login } from '~/features/auth/server/actions';
 import { loginRequestSchema } from '~/features/auth/schemas';
-import LoginForm from '~/features/auth/components/views/login/login-form';
+import { LoginForm } from '~/features/auth/components/views/login';
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const formData = await request.formData();
